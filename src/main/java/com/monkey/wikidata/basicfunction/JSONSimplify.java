@@ -92,10 +92,10 @@ public class JSONSimplify {
 				JSONObject p = (JSONObject) tempArray.get(i);
 				JSONObject mainsnak = (JSONObject) p.get("mainsnak");
 				String propertyID = (String) mainsnak.get("property");
-				String dataType = (String) mainsnak.get("datatype");
+				String dataType = mainsnak.get("datatype")==null?"":(String)mainsnak.get("datatype");
 				String dataValueType = "";
 				String dataValue = "";
-				if((dataType.equals("wikibase-item") || dataType.equals("wikibase-property"))&& mainsnak.get("datavalue")!=null) {
+				if(!dataType.equals("") && (dataType.equals("wikibase-item") || dataType.equals("wikibase-property"))&& mainsnak.get("datavalue")!=null) {
 					JSONObject datavalue = (JSONObject) mainsnak.get("datavalue");
 					JSONObject value = (JSONObject) datavalue.get("value");
 					String entity_type = (String) value.get("entity-type");

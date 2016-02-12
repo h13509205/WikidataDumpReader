@@ -165,7 +165,7 @@ public class App
     		JSONParser parser=new JSONParser();
     		
     		String s = br.readLine();
-    		for(int i=0;i<10000;i++) {
+    		for(int i=0;i<1000;i++) {
     			s = br.readLine();
     			JSONObject jsonObj = (JSONObject) parser.parse(JSONQualify.qualify(s));
     			String id = JSONSimplify.getID(jsonObj);
@@ -173,7 +173,6 @@ public class App
     			System.out.println(id);
     			System.out.println();
     			modifyEasy2See.writeEasyToSee(perfix+"/"+id+".json", JSONSimplify.simplify(jsonObj));
-    			
     		}
     		
     		br.close();

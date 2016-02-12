@@ -4,6 +4,7 @@ import java.util.Stack;
 
 public class JSONQualify {
 	public static boolean isQualified(String s) {
+		if(s.charAt(0)!='{') return false;
 		Stack<Character> stack = new Stack<Character>();
 		int len = s.length();
 		for(int i = 0; i < len; i++) {
