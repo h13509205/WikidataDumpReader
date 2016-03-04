@@ -8,8 +8,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
+import org.bson.Document;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
@@ -21,6 +24,8 @@ import com.monkey.wikidata.basicfunction.JSON2File;
 import com.monkey.wikidata.basicfunction.JSONQualify;
 import com.monkey.wikidata.basicfunction.JSONSimplify;
 import com.monkey.wikidata.basicfunction.ReadWriteFileWithEncode;
+import com.monkey.wikidata.mongodb.Json2Document;
+import com.monkey.wikidata.mongodb.MongodbCurd;
 
 /**
  * Main function
@@ -46,10 +51,9 @@ public class App
     public static void main( String[] args ) throws Exception
     {
     	App a = new App();
-    	a.simplifyJSONs();
-    	//a.writeJSONWithoutModify2();
-    	//a.test();
-    	//a.writeJSONModifiedEasy2See();
+    	//a.simplifyJSONs();
+    	a.writeIntoMongo("wikidata", "properties", "D:/wikidata/wikidatasimplep.txt");
+    	a.writeIntoMongo("wikidata", "items", "D:/wikidata/wikidatasimpleq.txt");
     }
     
     public void simplifyJSONs(){
@@ -205,6 +209,38 @@ public class App
     		isr.close();
     		fis.close();
     	}catch(Exception e){
+    		e.printStackTrace();
+    	}
+    }
+    
+    public void writeIntoMongo(String dbName, String collection, String fileName) {
+    	MongodbCurd mongo = new MongodbCurd(dbName);
+    	try {
+    		String s = null;
+    		File file = new File(fileName);
+    		FileInputStream fis = new FileInputStream(file);
+    		InputStreamReader isr = new InputStreamReader(fis, "UTF-8");
+    		BufferedReader br = new BufferedReader(isr);
+    		mongo.init();
+    		while((s = br.readLine())!=null) {
+    			List<Document> list = new ArrayList<Document>();
+    			Document document = new Document();
+    			document = Document.parse(s);
+    			list.add(document);
+        		for(int i = 0; i <= 1000 &&(s = br.readLine())!=null; i++) {
+        			document = new Document();
+        			document = Document.parse(s);
+        			list.add(document);
+        		}
+        		
+        		mongo.addBatch(collection, list);
+        		
+    		}
+    		mongo.destroy();
+    		br.close();
+    		isr.close();
+    		fis.close();
+    	}catch(Exception e) {
     		e.printStackTrace();
     	}
     }
